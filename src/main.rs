@@ -1,15 +1,11 @@
 use std::collections::HashMap;
-use std::io;
-use std::fs;
-use std::fs::File;
-use std::io::Write;
+use std::{io, io::Write, fs, fs::File};
 use std::path::PathBuf;
 use dirs::home_dir;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
-use reqwest::{Client};
+use reqwest::Client;
 use serde::{Deserialize, Serialize};
-use serde_json::{json, to_vec};
-
+use serde_json::to_vec;
 #[derive(Deserialize, Serialize)]
 struct ApiReturn {
     disclaimer: String,
@@ -26,8 +22,7 @@ async fn main() {
     if update_var == "y"{
         save_currencies(request().await);
     }
-    let request = request().await;
-    println!("{:#?}",request.rates);
+    convert_currencies(load_currencies().rates);
 }
 async fn request() -> ApiReturn {
     let app_id = app_id();
@@ -40,12 +35,14 @@ async fn request() -> ApiReturn {
     serde_json::from_str(response.as_str()).unwrap()
 }
 fn app_id() -> String{
-    let app_id_string = fs::read_to_string(config_file().as_mut_os_string().append("app_id"));
+    let mut path = config_file().into_os_string();
+    path.push("app_id");
+    let app_id_string = fs::read_to_string(path.as_os_str());
     match app_id_string {
         Ok(app_id_string) => app_id_string,
-        _Err => {
+        _err => {
             let mut app_id = String::new();
-            println!("Input your openexchangerates.org app id.");
+            println!("Input your openexchangerates.org app id");
             io::stdin().read_line(&mut app_id).unwrap();
             let mut file = File::create(config_file()).unwrap();
             file.write(app_id.as_bytes()).unwrap();
@@ -54,11 +51,31 @@ fn app_id() -> String{
     }
 }
 fn save_currencies(save_json: ApiReturn){
-    fs::write(
-        config_file().push("currency.json").as_path(),
-        json![to_vec(&save_json)]
-    )
+    let mut path = config_file().into_os_string();
+    path.push("currency.json");
+    fs::write(path.as_os_str(), to_vec(&save_json).unwrap())
         .expect("Should create or overwrite file.");
+}
+fn load_currencies() -> ApiReturn{
+    let mut path = config_file().into_os_string();
+    path.push("currency.json");
+    serde_json::from_slice(&*fs::read(path).expect("Re-run and refresh your currencies.")).unwrap()
+}
+fn convert_currencies(currency_map: HashMap<String, f32>){
+    println!("What currency do you want to convert from (i.e. USD, GBP, or EUR?");
+    let mut orgin_currency = String::new();
+    io::stdin().read_line(&mut orgin_currency).unwrap();
+    println!("What currency do you want to convert to?");
+    let mut final_currency = String::new();
+    io::stdin().read_line(&mut final_currency).unwrap();
+    println!("How much {} do you want to know the value of in {}?", orgin_currency, final_currency);
+    let mut amount = String::new();
+    io::stdin().read_line(&mut amount).unwrap();
+    let orgin_multiplier = currency_map.get(&orgin_currency).expect("Invalid currency name");
+    let final_multiplier = currency_map.get(&final_currency).expect("Invalid currency name");
+    let final_amount = orgin_multiplier * final_multiplier * amount.parse::<f32>().unwrap();
+    println!("{} {} is {} {}",amount, orgin_currency, final_amount, final_currency)
+
 }
 fn config_file() -> PathBuf {
     PathBuf::from(
