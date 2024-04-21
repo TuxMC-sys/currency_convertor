@@ -45,7 +45,7 @@ fn app_id() -> String{
             println!("Input your openexchangerates.org app id");
             io::stdin().read_line(&mut app_id).unwrap();
             let mut file = File::create(path).unwrap();
-            file.write(app_id.as_bytes()).unwrap();
+            file.write_all(app_id.as_bytes()).unwrap();
             app_id
         }
     }
@@ -59,7 +59,7 @@ fn save_currencies(save_json: ApiReturn){
 fn load_currencies() -> ApiReturn{
     let mut path = config_file().into_os_string();
     path.push("currency.json");
-    serde_json::from_slice(&*fs::read(path).expect("Re-run and refresh your currencies.")).unwrap()
+    serde_json::from_slice(&fs::read(path).expect("Re-run and refresh your currencies.")).unwrap()
 }
 fn convert_currencies(currency_map: HashMap<String, f32>){
     println!("What currency do you want to convert from (i.e. USD, GBP, or EUR)?");
