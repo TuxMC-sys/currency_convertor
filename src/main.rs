@@ -62,7 +62,7 @@ fn load_currencies() -> ApiReturn{
     serde_json::from_slice(&*fs::read(path).expect("Re-run and refresh your currencies.")).unwrap()
 }
 fn convert_currencies(currency_map: HashMap<String, f32>){
-    println!("What currency do you want to convert from (i.e. USD, GBP, or EUR?");
+    println!("What currency do you want to convert from (i.e. USD, GBP, or EUR)?");
     let mut orgin_currency = String::new();
     io::stdin().read_line(&mut orgin_currency).unwrap();
     orgin_currency.truncate(orgin_currency.len() - 1);
