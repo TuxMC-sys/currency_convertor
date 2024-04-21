@@ -19,7 +19,7 @@ async fn main() {
     println!("Do you need to update your exchange rates? Type y for yes, else click enter.");
     let mut update_var = String::new();
     io::stdin().read_line(&mut update_var).unwrap();
-    if update_var == "y"{
+    if update_var == "y\n"{
         save_currencies(request().await);
     }
     convert_currencies(load_currencies().rates);
@@ -44,7 +44,7 @@ fn app_id() -> String{
             let mut app_id = String::new();
             println!("Input your openexchangerates.org app id");
             io::stdin().read_line(&mut app_id).unwrap();
-            let mut file = File::create(config_file()).unwrap();
+            let mut file = File::create(path).unwrap();
             file.write(app_id.as_bytes()).unwrap();
             app_id
         }
@@ -65,18 +65,23 @@ fn convert_currencies(currency_map: HashMap<String, f32>){
     println!("What currency do you want to convert from (i.e. USD, GBP, or EUR?");
     let mut orgin_currency = String::new();
     io::stdin().read_line(&mut orgin_currency).unwrap();
+    orgin_currency.truncate(orgin_currency.len() - 1);
     println!("What currency do you want to convert to?");
     let mut final_currency = String::new();
     io::stdin().read_line(&mut final_currency).unwrap();
+    final_currency.truncate(final_currency.len() - 1);
     println!("How much {} do you want to know the value of in {}?", orgin_currency, final_currency);
     let mut amount = String::new();
     io::stdin().read_line(&mut amount).unwrap();
     let orgin_multiplier = currency_map.get(&orgin_currency).expect("Invalid currency name");
     let final_multiplier = currency_map.get(&final_currency).expect("Invalid currency name");
-    let final_amount = orgin_multiplier * final_multiplier * amount.parse::<f32>().unwrap();
+    amount.truncate(amount.len()-1);
+    let amount = amount.parse::<f32>().unwrap();
+    let final_amount = orgin_multiplier * final_multiplier * amount;
     println!("{} {} is {} {}",amount, orgin_currency, final_amount, final_currency)
 
 }
+
 fn config_file() -> PathBuf {
     PathBuf::from(
         &[
