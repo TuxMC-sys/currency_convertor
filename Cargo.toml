@@ -5,7 +5,7 @@ edition = "2021"
 readme = "README.md"
 description = "This allows you to convert currencies using the openexchangerates.org API."
 repository = "https://github.com/TuxMC-sys/currency_convertor/tree/main"
-license = "GPL-3"
+license = "GPL-3.0-or-later"
 keywords = ["currency","currencies","utilities","money", "international"]
 categories = ["command-line-utilities","finance"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
