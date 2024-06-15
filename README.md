@@ -1,3 +1,13 @@
-This is a program for converting currency. It uses the [OER](openexchangerates.org) API with a user provided API key.
-The first time you run it, you must load/re-load your currencies. After that, you can do so as needed.
-Due to some quirks in my input handling, it may not work on Windows. Commits welcome, especially fixing error handling/input.
+## A simple terminal currency convertor
+**How to run**
+```
+currency_convetor amount starting_currency_code currency_to_convert_to (optional: -r)
+```
+Example:
+```
+$ currency_convertor 500 USD GBP
+500 USD is 394.5705 GBP
+```
+It uses the [OER](openexchangerates.org) API with a user provided API key.
+The first time you run it, you must refresh your currencies with the -r flag. After that, you can do so as needed.
+Works on Windows, Linux, and Mac.
