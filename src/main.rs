@@ -1,9 +1,6 @@
-use std::collections::HashMap;
-use std::{io, io::Write, fs, fs::File};
-use std::path::PathBuf;
+use std::{collections::HashMap, path::PathBuf, io, io::Write, fs, fs::File};
 use dirs::home_dir;
-use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
-use reqwest::Client;
+use reqwest::{Client, header::{HeaderMap, HeaderName, HeaderValue}};
 use serde::{Deserialize, Serialize};
 use serde_json::to_vec;
 #[derive(Deserialize, Serialize)]
@@ -20,13 +17,15 @@ async fn main() {
     let mut update_var = String::new();
     io::stdin().read_line(&mut update_var).unwrap();
     if update_var == "y\n"{
-        save_currencies(request().await);
+        save_currencies(request_rates().await);
     }
     convert_currencies(load_currencies().rates);
 }
-async fn request() -> ApiReturn {
+async fn request_rates() -> ApiReturn {
     let app_id = app_id();
-    let url = format!("https://openexchangerates.org/api/latest.json?app_id={app_id}&base=USD&prettyprint=true&show_alternative=true");
+    let url = format!(
+        "https://openexchangerates.org/api/latest.json?app_id={app_id}&base=USD&prettyprint=true&show_alternative=true"
+    );
     let mut headers = HeaderMap::new();
     headers.insert(HeaderName::from_static("accept"), HeaderValue::from_static("application/json"));
     let client = Client::new();
@@ -79,7 +78,6 @@ fn convert_currencies(currency_map: HashMap<String, f32>){
     let amount = amount.parse::<f32>().unwrap();
     let final_amount = orgin_multiplier * final_multiplier * amount;
     println!("{} {} is {} {}",amount, orgin_currency, final_amount, final_currency)
-
 }
 
 fn config_file() -> PathBuf {
