@@ -1,5 +1,5 @@
 [package]
-name = "currency_convertor"
+name = "currency_converter"
 version = "0.2.1"
 edition = "2021"
 readme = "README.md"
