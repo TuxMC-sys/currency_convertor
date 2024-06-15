@@ -1,3 +1,4 @@
+# DEPRECATED SEE [oer_conversion_rates](https://crates.io/crates/oer_conversion_rates)
 ## A minimalist terminal currency convertor
 **How to run**
 ```
