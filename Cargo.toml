@@ -1,9 +1,9 @@
 [package]
 name = "currency_convertor"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 readme = "README.md"
-description = "This program allows you to convert currencies using the openexchangerates.org API."
+description = "A minimalist terminal currency convertor"
 repository = "https://github.com/TuxMC-sys/currency_convertor/tree/main"
 license = "GPL-3.0-or-later"
 keywords = ["currency","currencies","utilities","money", "international"]
