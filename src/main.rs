@@ -1,3 +1,4 @@
+use clap::Parser;
 use dirs::home_dir;
 use reqwest::{
     header::{HeaderMap, HeaderName, HeaderValue},
@@ -6,14 +7,17 @@ use reqwest::{
 use serde::{Deserialize, Serialize};
 use serde_json::to_vec;
 use std::{collections::HashMap, fs, fs::File, io, io::Write, path::PathBuf};
-use clap::Parser;
 #[derive(Parser)]
-#[command(version, about, long_about = "This program allows you to convert currencies using the openexchangerates.org API.")]
+#[command(
+    version,
+    about,
+    long_about = "This program allows you to convert currencies using the openexchangerates.org API."
+)]
 struct Cli {
     amount: f32,
     orgin_currency: String,
     final_currency: String,
-    #[arg(short, long, help="Gets latest exchange rates using your API key.")]
+    #[arg(short, long, help = "Gets latest exchange rates using your API key.")]
     refresh: bool,
 }
 #[derive(Deserialize, Serialize)]
@@ -27,7 +31,7 @@ struct ApiReturn {
 #[tokio::main]
 async fn main() {
     let cli = Cli::parse();
-    if cli.refresh{
+    if cli.refresh {
         save_currencies(request_rates().await);
     }
     convert_currencies(load_currencies().rates, cli);
